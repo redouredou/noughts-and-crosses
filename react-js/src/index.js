@@ -86,6 +86,7 @@ class Game extends React.Component {
     })
   }
 
+
   render() {
 
     const history = this.state.history;
@@ -93,7 +94,7 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ? 'Revenir au tour n°' + move + ' à l\'emplacement joué ('+step.position[0]+','+step.position[1]+')' : 
+      const desc = move ? displayHistory(this.state.stepNumber, step, move) : 
       'Revenir au début de la partie';
       return (
         <li key={move}>
@@ -132,6 +133,14 @@ ReactDOM.render(
   <Game />,
   document.getElementById('root')
 );
+
+function historySentence(step, move){
+  return 'Revenir au tour n°' + move + ' à l\'emplacement joué ('+step.position[0]+','+step.position[1]+')';
+}
+
+function displayHistory(stepNumber, step, move){
+  return  move === stepNumber ? <strong>{ historySentence(step,move)} </strong> : historySentence(step,move);
+}
 
 function calculateWinner(squares) {
   const lines = [
