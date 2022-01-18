@@ -50,9 +50,10 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        position: Array(2).fill(null),
       }],
       xIsNext: true,
-      stepNumber: 0
+      stepNumber: 0,
     };
   }
 
@@ -61,13 +62,17 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    const position = getCoordinates(i);
+
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    
     this.setState({
       history: history.concat([{
         squares: squares,
+        position: position
       }]),
       stepNumber : history.length,
       xIsNext: !this.state.xIsNext,
@@ -88,7 +93,7 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ? 'Revenir au tour n°' + move : 
+      const desc = move ? 'Revenir au tour n°' + move + ' à l\'emplacement joué ('+step.position[0]+','+step.position[1]+')' : 
       'Revenir au début de la partie';
       return (
         <li key={move}>
@@ -146,4 +151,16 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+
+function getCoordinates(index){
+    if([0,1,2].includes(index)){
+      return [index + 1, 1]
+    }
+    if([3,4,5].includes(index)){
+      return [index - 2, 2]
+    }
+    if([6,7,8].includes(index)){
+      return [index - 5, 3]
+    }
 }
