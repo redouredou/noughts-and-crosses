@@ -27,7 +27,10 @@ class Board extends React.Component {
       <div>
         {[0,3,6].map(elt => 
           <div key = {elt} className="board-row">
-            {[0,1,2].map(elt1 => this.renderSquare(elt + elt1))}
+            {[0,1,2].map(elt1 => 
+              <React.Fragment  key = {elt + elt1}>
+                  {this.renderSquare(elt + elt1) } 
+              </React.Fragment> )}
           </div>
         )}
       </div>
@@ -41,10 +44,11 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
-        position: Array(2).fill(null),
+        position: Array(2).fill(null)
       }],
       xIsNext: true,
       stepNumber: 0,
+      orderHistory: true,
     };
   }
 
@@ -63,7 +67,7 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([{
         squares: squares,
-        position: position
+        position: position,
       }]),
       stepNumber : history.length,
       xIsNext: !this.state.xIsNext,
@@ -77,6 +81,12 @@ class Game extends React.Component {
     })
   }
 
+  switchHistoryOrder(){
+    this.setState({
+      orderHistory: !this.state.orderHistory
+    })
+  }
+
 
   render() {
 
@@ -84,6 +94,7 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
+    
     const moves = history.map((step, move) => {
       const desc = move ? displayHistory(this.state.stepNumber, step, move) : 
       'Revenir au début de la partie';
@@ -111,7 +122,8 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <button onClick={() => this.switchHistoryOrder()}>Switch</button>
+          <ol>{this.state.orderHistory ? moves : moves.reverse()}</ol>
         </div>
       </div>
     );
